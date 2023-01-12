@@ -37,8 +37,10 @@ Route::any('/{any}', function (ServerRequestInterface $request) {
  */
 
 /* Para REACT-ADMIN */
-    $records = json_decode($response->getBody()->getContents())->records;
-    $response = response()->json($records, 200, $headers = ['X-Total-Count' => count($records)]);
+    if($request->getMethod() != 'POST') {
+        $records = json_decode($response->getBody()->getContents())->records;
+        $response = response()->json($records, 200, $headers = ['X-Total-Count' => count($records)]);
+    }
     return $response;
 /* Fin REACT-ADMIN */
 
