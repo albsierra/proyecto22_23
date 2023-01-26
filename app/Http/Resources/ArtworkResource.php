@@ -37,7 +37,11 @@ class ArtworkResource extends JsonResource
         $attributes = array();
 
         foreach(self::KEYS as $key => $field) {
-            $attributes[$key] = self::getFirstElementRecursive($data[$field]);
+            if (array_key_exists($field, $data)) {
+                $attributes[$key] = self::getFirstElementRecursive($data[$field]);
+            } else {
+                $attributes[$key] = 'Undefined';
+            }
         }
 
         return $attributes;
