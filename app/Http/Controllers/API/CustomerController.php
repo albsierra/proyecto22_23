@@ -17,10 +17,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $busqueda = $request->input('filter');
-        $pagina = $request->input('page');
-        $numElementos = $pagina['size'];
-        $numPagina = $pagina['number'];
-        $request->merge(array('page' => $numPagina));
+        $numElementos = $request->input('numElements');
         $registrosCustomers =
             ($busqueda && array_key_exists('q', $busqueda))
             ? Customer::where('first_name', 'like', '%' .$busqueda['q'] . '%')
