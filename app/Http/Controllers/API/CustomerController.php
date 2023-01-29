@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CustomerController extends Controller
 {
@@ -54,6 +55,10 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
+        if (! Gate::allows('update-customer', $customer)) {
+            abort(403);
+        }
+
         $customerData = json_decode($request->getContent(), true);
         $customer->update($customerData['data']['attributes']);
 
