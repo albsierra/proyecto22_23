@@ -6,10 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\UserController;
-
-use Illuminate\Validation\ValidationException;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\API\TokenController;
 
 use Tqdev\PhpCrudApi\Api;
 use Tqdev\PhpCrudApi\Config\Config;
@@ -31,29 +28,14 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $user;
 });
 
-Route::apiResource('customers', CustomerController::class);
+Route::apiResource('customers', CustomerController::class)->middleware('auth:sanctum');
 
 Route::apiResource('users', UserController::class);
 
-Route::post('/tokens/create', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
-    }
-
-    return response()->json([
-        'token_type' => 'Bearer',
-        'access_token' => $user->createToken('token_name')->plainTextToken // token name you can choose for your self or leave blank if you like to
-    ]);
-});
+// emite un nuevo token
+Route::post('tokens', 'App\Http\Controllers\API\TokenController@store');
+// elimina el token del usuario autenticado
+Route::delete('tokens', 'App\Http\Controllers\API\TokenController@destroy')->middleware('auth:sanctum');
 
 Route::any('/{any}', function (ServerRequestInterface $request) {
     $config = new Config([
