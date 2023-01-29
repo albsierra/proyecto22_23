@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Gate;
 class CustomerController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Customer::class, 'customer');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -28,6 +38,13 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        /*
+        if ($request->user()->cannot('update', Customer::class)) {
+            abort(403);
+        }
+*/
+        $this->authorize('create', Centro::class);
+
         $customer = json_decode($request->getContent(), true);
 
         $customer = Customer::create($customer['data']['attributes']);
@@ -55,10 +72,12 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        if (! Gate::allows('update-customer', $customer)) {
+        /*
+        if ($request->user()->cannot('update', $customer)) {
             abort(403);
         }
-
+*/
+        $this->authorize('update', $customer);
         $customerData = json_decode($request->getContent(), true);
         $customer->update($customerData['data']['attributes']);
 
