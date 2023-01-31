@@ -16,15 +16,11 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $busqueda = $request->input('filter');
         $numElementos = $request->input('numElements');
-        $registrosCustomers =
-            ($busqueda && array_key_exists('q', $busqueda))
-            ? Customer::where('first_name', 'like', '%' .$busqueda['q'] . '%')
-                ->paginate($numElementos)
-            : Customer::paginate($numElementos);
 
-        return CustomerResource::collection($registrosCustomers);
+        $registros = searchByField(array('first_name', 'last_name', 'job_title', 'city', 'country'), Customer::class);
+
+        return CustomerResource::collection($registros->paginate($numElementos));
     }
 
     /**
