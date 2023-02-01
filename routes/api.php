@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ArtworkController;
+use App\Http\Controllers\API\TokenController;
 
 use Tqdev\PhpCrudApi\Api;
 use Tqdev\PhpCrudApi\Config\Config;
@@ -23,7 +24,9 @@ use Tqdev\PhpCrudApi\Config\Config;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    $user = $request->user();
+    $user->fullName = $user->name;
+    return $user;
 });
 
 Route::apiResource('customers', CustomerController::class);
@@ -31,6 +34,11 @@ Route::apiResource('customers', CustomerController::class);
 Route::apiResource('users', UserController::class);
 
 Route::get('artworks', [ArtworkController::class, 'index']);
+
+// emite un nuevo token
+Route::post('tokens', [TokenController::class, 'store']);
+// elimina el token del usuario autenticado
+Route::delete('tokens', [TokenController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::any('/{any}', function (ServerRequestInterface $request) {
     $config = new Config([
