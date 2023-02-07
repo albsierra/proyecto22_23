@@ -17,13 +17,12 @@ class UserResource extends JsonResource
             // return parent::toArray($request);
             return [
                 'id' => $this->id,
-                'attributes' => parent::toArray($request)
-/*                'attributes' => [
+//                'attributes' => parent::toArray($request)
+                'attributes' => [
                     'name' => $this->name,
                     'email' => $this->email,
-                    'customer' => new CustomerResource($this->customer)
+                    'roles' => RoleResource::collection($this->roles)
                 ]
- */
             ];
         }
 }
