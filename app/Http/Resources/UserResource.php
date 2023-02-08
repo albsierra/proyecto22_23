@@ -24,7 +24,8 @@ class UserResource extends JsonResource
             'attributes' => [
                 'name' => $name,
                 'email' => $this->email,
-                // 'customer' => new CustomerResource($this->customer)
+                // 'customer' => new CustomerResource($this->customer),
+                'roles' => RoleResource::collection($this->roles)
             ]
         ];
     }
