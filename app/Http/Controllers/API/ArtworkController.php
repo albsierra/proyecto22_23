@@ -18,7 +18,7 @@ class ArtworkController extends Controller
     public function index(Request $request)
     {
         // Inicialmente, vamos a utilizar un autor constante
-        $author = $request->input('filter')['q'];
+        $author = $request->input('filter')? $request->input('filter')['q'] : 'Cano, Pedro';
         // La key la cogeremos de las variables de entorno
         $key = env("API_KEY");
         $urlEuropeanaAPI = "https://api.europeana.eu/record/v2/search.json?";
